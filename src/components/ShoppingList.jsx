@@ -1,7 +1,11 @@
+import { useState } from "react"
+
 import AddForm from "./AddForm"
 import Item from "./Item"
 import Search from "./Search"
-import { useState } from "react"
+
+import Button from 'react-bootstrap/Button';
+import Collapse from 'react-bootstrap/Collapse';
 
 const testInitialList = [
     {name: "Tablet", price: 200 },
@@ -12,17 +16,50 @@ const testInitialList = [
 
 function ShoppingList() {
 
-    const [caja, setCaja] = useState(testInitialList)
+    const [caja, setCaja] = useState(testInitialList)   //donde esta toda la informacion
+    const [cajaAMostrar, setCajaAMostrar] = useState(testInitialList) //estado paralelo
+    const [formIsShowing, setFormIsShowing] = useState(false)
 
-    // const añadirProducto = (product) => {
-    //     //lifting the state up
-    //     console.log("añadiendo producto desde shopping list", product)
-    //     const copy = [...caja]
 
-    //     copy.push(product)
+     const añadirProducto = (product) => {
+         //lifting the state up
+         console.log("añadiendo producto desde shopping list", product)
+         const copy = [...caja]
+         copy.push(product)
+         setCaja(copy)
 
-    //     setCaja(copy)
-    // }
+         // esto es para que el filtro funcione bien
+         const copy2 = [...cajaAMostrar]
+         copy2.push(product)
+         setCajaAMostrar(copy2)
+
+     }
+
+    const toggleForm = () => {
+
+        console.log("se ve?");
+        setFormIsShowing(true)
+
+        // if (formIsShowing=== true)  {
+        //     setFormIsShowing(false)
+        // } else {
+        //     setFormIsShowing(true)
+        // }
+        setFormIsShowing(!formIsShowing)
+
+    }
+
+    const filterCaja = (filterQuery) => {
+        console.log(filterQuery)
+
+        const filteredArr = caja.filter((eachProduct) => {
+          return  eachProduct.name.startsWith(filterQuery) 
+        })
+        // ... aqui aremos el filtro, tenemos caja y el filterQuery
+
+        console.log(filteredArr)
+        setCajaAMostrar(filteredArr)
+    }
 
   return (
     <div>
@@ -30,18 +67,27 @@ function ShoppingList() {
         <h3>Lista de compra</h3>
 
         <hr />
-
-    <AddForm
-    // addProduct={añadirProducto}
-    setCaja={setCaja}
+    <Button variant="outline-info" onClick={toggleForm}>Abrir el Form</Button>
+    {/* {formIsShowing === true 
+    &&  <AddForm
+     addProduct={añadirProducto}
+    //setCajaAMostrar={setCaja}
     />
-
+    } */}
+    <Collapse in={formIsShowing}>
+    <div>
+    <AddForm
+     addProduct={añadirProducto}
+    //setCajaAMostrar={setCaja}
+    />
+    </div>
+    </Collapse>
     <hr />
 
-    <Search />
+    <Search filterCaja={filterCaja}/>
     <hr />
 
-    {caja.map((eachProduct, index) => {
+    {cajaAMostrar.map((eachProduct, index) => {
         return (
             <Item
             key={eachProduct.name + index}

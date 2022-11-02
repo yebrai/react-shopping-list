@@ -1,54 +1,56 @@
 import { useState } from "react"
 
+// imports de css
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+
 function AddForm(props) {
 
-  // Crear los estados para los campos (componente controlado)
+  // crear los estados para los campos (componente controlado)
   const [ nameInput, setNameInput ] = useState("")
-  const [priceInput,setPriceInput] = useState(0)
-
+  const [ priceInput, setPriceInput ] = useState(0)
 
   const añadirProducto = (event) => {
-    event.preventDefault() // Prviene comportamiento normal de form(El cual recarga toda la pagina)
-    console.log("intentado añadir producto")
-    console.log((event.target))
-    // tendriamos que hacer manipulacion de dom y eso quedo atras
+    event.preventDefault() // => previene el comportamiento normal de un formulario (recarga toda la pagina)
+    console.log("intentando añadir producto")
+    // tendriamos que hacer manupulacion de dom y eso quedo atras...
+    // ... ahora con componetes controlador, tenemos los valores en nameInput y priceInput
 
-    //.. ahora con componentes controlador
-
-    // ahora que ya tenemos los componentes
-    console.log(nameInput, priceInput)
+    // ... ahora que ya tenemos los valores para actualizar la lista... como lo hacemos?
+    // console.log(nameInput, priceInput)
     const productoParaAñadir = {
       name: nameInput,
       price: priceInput
     }
-
     console.log(productoParaAñadir)
-    // Opcion 1
-   // props.addProduct(productoParaAñadir)
+    // console.log(props)
 
-    //*Opcion 2
-    // props.stateUpdater()
-    //en funciones que actualizan el estado, tenemos dos formas de usarlas
-    //1º stateUpdater(PEl valor nuevo del estado)
-    //2º stateUpdater(Una funcion de callback)
+    // * opcion 1
+    props.addProduct(productoParaAñadir)
 
-    //currenState es el valor del estado antes de actualizar
-    props.setCaja((currentState) => {
-        const copy = [...currentState]
-        copy.push(productoParaAñadir)
-        //debemos retornar cual sera el valor actual
-        return copy
-    })
+    // * opcion 2
+    // props.setCaja() // ??
+    // en funciones que actualizar el estado, tenemos dos formas de usarlas
+    // setCaja( el valor nuevo del estado )
+    // setCaja( una funcion de callback )
+    // props.setCaja((currentState) => {
+    // // currentState es el valor del estado antes de actualizar
+    //   const copy = [...currentState]
+    //   copy.push(productoParaAñadir)
+    //   // debemos retornar cual será el valor actual
+    //   return copy
+    // })
+
   }
 
   const handleChangeName = (event) => {
-    //evento es toda la info de la interacion del usuario sobre toda la pagina
-    // event.target es el lugar dnd se ocasiono dicho evento
-    
-    // voy a cambiar el estado solo con mayusculas
+    // event es TODA la informacion de la interaccion del usuario con la pagina
+    // event.target es EL LUGAR donde se ocasionó dicho evento
+
+    // voy a cambiar estado solo con mayusculas
     let input = event.target.value.toUpperCase()
+
     setNameInput(input)
-    
   }
 
   const handleChangePrice = (event) => {
@@ -57,20 +59,18 @@ function AddForm(props) {
 
   return (
     <div>
-    
+      
       <h4>Formulario de agregar</h4>
 
-      {/* <form onSubmit={añadirProducto}> */}
       <form>
 
+        <Form.Label htmlFor="name">Nombre:</Form.Label>
+        <Form.Control type="text" name="name" value={nameInput} onChange={handleChangeName}/>
 
-        <label htmlFor="name">Nombre: </label>
-        <input type="text" name="name" value={nameInput} onChange={handleChangeName}/>
+        <Form.Label htmlFor="price">Precio:</Form.Label>
+        <Form.Control type="number" name="price" value={priceInput} onChange={handleChangePrice} min={0}/>
 
-        <label htmlFor="price">Precio:</label>
-        <input type="number" name="price" value={priceInput} onChange={handleChangePrice}/>
-
-        <button onClick={añadirProducto}>Agregar</button>
+        <Button onClick={añadirProducto}>Agregar</Button>
 
       </form>
 
